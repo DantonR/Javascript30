@@ -55,30 +55,29 @@
     <audio data-key="75" src="sounds/tom.wav"></audio>
     <audio data-key="76" src="sounds/tink.wav"></audio>
 
-    <script src="script.js">
-      const d = document;
-      const kbdAll = d.querySelectorAll("kbd");
-      const audioAll = d.querySelectorAll("audio");
+    <script>
+      function removeClass(e) {
+        if (e.propertyName !== "transform") return;
+        e.target.classList.remove("playing");
+      }
 
-      d.addEventListener("keydown", (e) => {
-        let keyPressed = e.key;
-        for (let i = 0; i < kbdAll.length; i++) {
-          let kbdIndividual = kbdAll[i];
-          let kbdIndividualParent = kbdIndividual.parentElement;
-          let kbdIndividualParentKey = kbdIndividualParent.dataset.key;
-          let kbdIndividualLetter = kbdIndividual.innerHTML.toLowerCase();
+      function keypress(e) {
+        const button = document.querySelector(`div[data-key="${e.keyCode}"]`);
+        const audio = document.querySelector(`audio[data-key="${e.keyCode}"]`);
+        if (!audio) return;
 
-          if (keyPressed === kbdIndividualLetter) {
-            for (let x = 0; x < audioAll.length; x++) {
-              let audioKey = audioAll[x].dataset.key;
-              if (kbdIndividualParentKey === audioAll[x].dataset.key) {
-                console.dir(audioAll[x].src);
-                audioAll[x].play();
-              }
-            }
-          }
-        }
-      });
+        button.classList.add("playing");
+        audio.currentTime = 0;
+        audio.play();
+      }
+
+      const w = window;
+      const buttons = document.querySelectorAll(".key");
+
+      w.addEventListener("keydown", keypress);
+      buttons.forEach((button) =>
+        addEventListener("transitionend", removeClass)
+      );
     </script>
   </body>
 </html>
